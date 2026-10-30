@@ -2,12 +2,12 @@
   {
     "name": "Sabbu",
     "registeredAt": "2026-10-30T12:32:52.762Z",
-    "totalTestsAppeared": 1,
+    "totalTestsAppeared": 2,
     "totalScore": 3,
-    "totalQuestions": 5,
-    "overallAccuracy": 60,
+    "totalQuestions": 10,
+    "overallAccuracy": 30,
     "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T12:33:04.444Z",
+    "lastUpdated": "2026-10-30T18:53:08.365Z",
     "tests": [
       {
         "boothId": "booth-1",
@@ -19,6 +19,17 @@
         "percentage": 60,
         "timeTakenSeconds": 11,
         "completedAt": "2026-10-30T12:33:04.444Z"
+      },
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "topicTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "score": 0,
+        "totalQuestions": 5,
+        "percentage": 0,
+        "timeTakenSeconds": 60,
+        "completedAt": "2026-10-30T18:53:08.365Z"
       }
     ]
   }
