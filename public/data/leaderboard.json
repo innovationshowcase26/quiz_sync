@@ -1,58 +1,13 @@
 [
   {
-    "name": "Sabbu",
-    "registeredAt": "2026-10-30T12:32:52.762Z",
-    "totalTestsAppeared": 4,
-    "totalScore": 5,
-    "totalQuestions": 20,
-    "overallAccuracy": 25,
-    "isPrizeEligible": true,
-    "lastUpdated": "2026-10-30T18:56:24.352Z",
-    "tests": [
-      {
-        "boothId": "booth-1",
-        "boothNumber": 1,
-        "boothTitle": "Data Governance, Lineage & Zero Trust",
-        "topicTitle": "Data Governance, Lineage & Zero Trust",
-        "score": 3,
-        "totalQuestions": 5,
-        "percentage": 60,
-        "timeTakenSeconds": 11,
-        "completedAt": "2026-10-30T12:33:04.444Z"
-      },
-      {
-        "boothId": "booth-2",
-        "boothNumber": 2,
-        "boothTitle": "Autonomous Agents & Digital Identity",
-        "topicTitle": "Autonomous Agents & Digital Identity",
-        "score": 2,
-        "totalQuestions": 5,
-        "percentage": 40,
-        "timeTakenSeconds": 57,
-        "completedAt": "2026-10-30T18:54:28.796Z"
-      },
-      {
-        "boothId": "booth-3",
-        "boothNumber": 3,
-        "boothTitle": "AI-Powered Software Engineering & Developer Productivity",
-        "topicTitle": "AI-Powered Software Engineering & Developer Productivity",
-        "score": 0,
-        "totalQuestions": 5,
-        "percentage": 0,
-        "timeTakenSeconds": 60,
-        "completedAt": "2026-10-30T18:53:08.365Z"
-      },
-      {
-        "boothId": "booth-4",
-        "boothNumber": 4,
-        "boothTitle": "Cloud Modernization & Data Platforms",
-        "topicTitle": "Cloud Modernization & Data Platforms",
-        "score": 0,
-        "totalQuestions": 5,
-        "percentage": 0,
-        "timeTakenSeconds": 52,
-        "completedAt": "2026-10-30T18:56:24.352Z"
-      }
-    ]
+    "name": "Sabbj",
+    "registeredAt": "2026-10-30T19:14:48.788Z",
+    "totalTestsAppeared": 0,
+    "totalScore": 0,
+    "totalQuestions": 0,
+    "overallAccuracy": 0,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-10-30T19:14:48.788Z",
+    "tests": []
   }
 ]
