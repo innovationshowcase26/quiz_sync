@@ -2,12 +2,12 @@
   {
     "name": "Sabbu",
     "registeredAt": "2026-10-30T12:32:52.762Z",
-    "totalTestsAppeared": 2,
-    "totalScore": 3,
-    "totalQuestions": 10,
-    "overallAccuracy": 30,
+    "totalTestsAppeared": 3,
+    "totalScore": 5,
+    "totalQuestions": 15,
+    "overallAccuracy": 33,
     "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T18:53:08.365Z",
+    "lastUpdated": "2026-10-30T18:54:28.796Z",
     "tests": [
       {
         "boothId": "booth-1",
@@ -19,6 +19,17 @@
         "percentage": 60,
         "timeTakenSeconds": 11,
         "completedAt": "2026-10-30T12:33:04.444Z"
+      },
+      {
+        "boothId": "booth-2",
+        "boothNumber": 2,
+        "boothTitle": "Autonomous Agents & Digital Identity",
+        "topicTitle": "Autonomous Agents & Digital Identity",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 57,
+        "completedAt": "2026-10-30T18:54:28.796Z"
       },
       {
         "boothId": "booth-3",
