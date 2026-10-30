@@ -1,0 +1,19 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "participants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "summary.totalScore",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "summary.totalTimeSeconds",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
