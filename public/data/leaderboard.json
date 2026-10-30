@@ -34,14 +34,25 @@
     ]
   },
   {
-    "name": "Anonymous Attendee",
-    "registeredAt": "2026-10-30T20:44:33.107Z",
+    "name": "Sabbu",
+    "registeredAt": "2026-10-30T20:45:14.053Z",
     "totalTestsAppeared": 0,
     "totalScore": 0,
     "totalQuestions": 0,
     "overallAccuracy": 0,
     "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T20:44:33.107Z",
+    "lastUpdated": "2026-10-30T20:45:14.053Z",
+    "tests": []
+  },
+  {
+    "name": "Anonymous Attendee",
+    "registeredAt": "2026-10-30T20:45:14.790Z",
+    "totalTestsAppeared": 0,
+    "totalScore": 0,
+    "totalQuestions": 0,
+    "overallAccuracy": 0,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-10-30T20:45:14.790Z",
     "tests": []
   }
 ]
