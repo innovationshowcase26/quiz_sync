@@ -32,5 +32,16 @@
         "completedAt": "2026-10-30T20:35:55.478Z"
       }
     ]
+  },
+  {
+    "name": "Anonymous Attendee",
+    "registeredAt": "2026-10-30T20:44:33.107Z",
+    "totalTestsAppeared": 0,
+    "totalScore": 0,
+    "totalQuestions": 0,
+    "overallAccuracy": 0,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-10-30T20:44:33.107Z",
+    "tests": []
   }
 ]
