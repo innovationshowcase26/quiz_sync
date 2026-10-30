@@ -1,46 +1,24 @@
 [
   {
     "name": "Sabbu",
-    "registeredAt": "2026-10-30T11:35:24.088Z",
-    "totalTestsAppeared": 3,
-    "totalScore": 4,
-    "totalQuestions": 15,
-    "overallAccuracy": 27,
+    "registeredAt": "2026-10-30T12:32:52.762Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 3,
+    "totalQuestions": 5,
+    "overallAccuracy": 60,
     "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T12:11:19.173Z",
+    "lastUpdated": "2026-10-30T12:33:04.444Z",
     "tests": [
       {
         "boothId": "booth-1",
         "boothNumber": 1,
         "boothTitle": "Data Governance, Lineage & Zero Trust",
         "topicTitle": "Data Governance, Lineage & Zero Trust",
-        "score": 1,
+        "score": 3,
         "totalQuestions": 5,
-        "percentage": 20,
-        "timeTakenSeconds": 10,
-        "completedAt": "2026-10-30T11:35:35.549Z"
-      },
-      {
-        "boothId": "booth-6",
-        "boothNumber": 6,
-        "boothTitle": "AI Business Intelligence & Process Automation",
-        "topicTitle": "AI Business Intelligence & Process Automation",
-        "score": 1,
-        "totalQuestions": 5,
-        "percentage": 20,
-        "timeTakenSeconds": 8,
-        "completedAt": "2026-10-30T12:04:23.092Z"
-      },
-      {
-        "boothId": "booth-9",
-        "boothNumber": 9,
-        "boothTitle": "AI-Accelerated Engineering, Automation & Quality",
-        "topicTitle": "AI-Accelerated Engineering, Automation & Quality",
-        "score": 2,
-        "totalQuestions": 5,
-        "percentage": 40,
-        "timeTakenSeconds": 8,
-        "completedAt": "2026-10-30T12:11:19.173Z"
+        "percentage": 60,
+        "timeTakenSeconds": 11,
+        "completedAt": "2026-10-30T12:33:04.444Z"
       }
     ]
   }
