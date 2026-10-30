@@ -4,6 +4,8 @@ import {
   subscribeToParticipants,
 } from "./services/firebase.js";
 import {
+  DEFAULT_REPO_NAME,
+  DEFAULT_REPO_OWNER,
   commitLeaderboardToGitHub,
   fetchCurrentLeaderboardSha,
   getAutoCommitPreference,
@@ -573,7 +575,7 @@ function App() {
               <p className="modal-desc">
                 Configure your GitHub Personal Access Token to commit{" "}
                 <code>public/data/leaderboard.json</code> directly to{" "}
-                <strong>innovation-showcase-2026/quiz_sync</strong>.
+                <strong>{DEFAULT_REPO_OWNER}/{DEFAULT_REPO_NAME}</strong>.
               </p>
 
               <div className="field-group">
@@ -618,7 +620,7 @@ function App() {
                 <div className="meta-item">
                   <span className="meta-label">Repository:</span>
                   <span className="meta-val">
-                    innovation-showcase-2026/quiz_sync
+                    {DEFAULT_REPO_OWNER}/{DEFAULT_REPO_NAME}
                   </span>
                 </div>
                 <div className="meta-item">
