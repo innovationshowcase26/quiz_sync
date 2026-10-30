@@ -3,8 +3,8 @@
     "name": "Sabbu",
     "registeredAt": "2026-10-30T20:34:01.561Z",
     "totalTestsAppeared": 2,
-    "totalScore": 9,
-    "totalQuestions": 15,
+    "totalScore": 6,
+    "totalQuestions": 10,
     "overallAccuracy": 60,
     "isPrizeEligible": false,
     "lastUpdated": "2026-10-30T20:37:31.806Z",
@@ -42,17 +42,6 @@
     "overallAccuracy": 0,
     "isPrizeEligible": false,
     "lastUpdated": "2026-10-30T20:45:14.053Z",
-    "tests": []
-  },
-  {
-    "name": "Anonymous Attendee",
-    "registeredAt": "2026-10-30T20:45:14.790Z",
-    "totalTestsAppeared": 0,
-    "totalScore": 0,
-    "totalQuestions": 0,
-    "overallAccuracy": 0,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T20:45:14.790Z",
     "tests": []
   }
 ]
