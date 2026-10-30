@@ -1,6 +1,6 @@
-const DEFAULT_REPO_OWNER =
-  import.meta.env.VITE_GITHUB_REPO_OWNER || "innovation-showcase-2026";
-const DEFAULT_REPO_NAME =
+export const DEFAULT_REPO_OWNER =
+  import.meta.env.VITE_GITHUB_REPO_OWNER || "innovationshowcase26";
+export const DEFAULT_REPO_NAME =
   import.meta.env.VITE_GITHUB_REPO_NAME || "quiz_sync";
 const DEFAULT_BRANCH = import.meta.env.VITE_GITHUB_BRANCH || "main";
 const LEADERBOARD_FILE_PATH = "public/data/leaderboard.json";

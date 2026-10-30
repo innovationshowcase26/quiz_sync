@@ -112,7 +112,7 @@ async function commitToGitHub(output) {
     return;
   }
 
-  const owner = process.env.VITE_GITHUB_REPO_OWNER || "innovation-showcase-2026";
+  const owner = process.env.VITE_GITHUB_REPO_OWNER || "innovationshowcase26";
   const repo = process.env.VITE_GITHUB_REPO_NAME || "quiz_sync";
   const branch = process.env.VITE_GITHUB_BRANCH || "main";
   const filePath = "public/data/leaderboard.json";
