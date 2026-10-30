@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Sabbu",
+    "registeredAt": "2026-10-30T05:41:02.139Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 1,
+    "totalQuestions": 5,
+    "overallAccuracy": 20,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-10-30T05:41:13.577Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data Governance, Lineage & Zero Trust",
+        "topicTitle": "Data Governance, Lineage & Zero Trust",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 11,
+        "completedAt": "2026-10-30T05:41:13.577Z"
+      }
+    ]
+  }
+]

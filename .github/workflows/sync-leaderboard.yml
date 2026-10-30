@@ -1,0 +1,56 @@
+name: Sync Firebase leaderboard
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: sync-leaderboard
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate leaderboard JSON
+        run: npm run sync
+
+      - name: Commit updated leaderboard
+        id: commit_step
+        run: |
+          if git diff --quiet -- public/data/leaderboard.json; then
+            echo "Leaderboard has not changed."
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/leaderboard.json
+          git commit -m "chore: sync leaderboard data"
+          git push
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Trigger deployment action
+        if: steps.commit_step.outputs.changed == 'true'
+        run: gh workflow run deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
