@@ -195,15 +195,39 @@ async function commitToGitHub(output) {
 async function main() {
   await loadEnv();
 
-  const participantsQuery = query(
-    collection(db, "participants"),
-    orderBy("summary.totalScore", "desc"),
-    orderBy("summary.totalTimeSeconds", "asc"),
-    limit(TOP_PARTICIPANTS_LIMIT),
-  );
-  const participantsSnapshot = await getDocs(participantsQuery);
+  let participantsDocs;
+  try {
+    const participantsQuery = query(
+      collection(db, "participants"),
+      orderBy("summary.totalScore", "desc"),
+      orderBy("summary.totalTimeSeconds", "asc"),
+      limit(TOP_PARTICIPANTS_LIMIT),
+    );
+    const participantsSnapshot = await getDocs(participantsQuery);
+    participantsDocs = participantsSnapshot.docs;
+  } catch (err) {
+    if (err?.code === "failed-precondition") {
+      console.warn(
+        "Firestore composite index is not yet built. Falling back to fetching and sorting in memory.\n" +
+          "Create composite index: https://console.firebase.google.com/v1/r/project/innovation-showcase-2026-d19de/firestore/indexes?create_composite=CmNwcm9qZWN0cy9pbm5vdmF0aW9uLXNob3djYXNlLTIwMjYtZDE5ZGUvZGF0YWJhc2VzLyhkZWZhdWx0KS9jb2xsZWN0aW9uR3JvdXBzL3BhcnRpY2lwYW50cy9pbmRleGVzL18QARoWChJzdW1tYXJ5LnRvdGFsU2NvcmUQAhocChhzdW1tYXJ5LnRvdGFsVGltZVNlY29uZHMQARoMCghfX25hbWVfXxAB",
+      );
+      const allDocsSnapshot = await getDocs(collection(db, "participants"));
+      participantsDocs = [...allDocsSnapshot.docs]
+        .sort((a, b) => {
+          const aData = a.data()?.summary || {};
+          const bData = b.data()?.summary || {};
+          const scoreDiff = (bData.totalScore || 0) - (aData.totalScore || 0);
+          if (scoreDiff !== 0) return scoreDiff;
+          return (aData.totalTimeSeconds || 0) - (bData.totalTimeSeconds || 0);
+        })
+        .slice(0, TOP_PARTICIPANTS_LIMIT);
+    } else {
+      throw err;
+    }
+  }
+
   const leaderboard = await Promise.all(
-    participantsSnapshot.docs.map(makeParticipantResult),
+    participantsDocs.map(makeParticipantResult),
   );
 
   await mkdir(path.dirname(OUTPUT_PATH), { recursive: true });

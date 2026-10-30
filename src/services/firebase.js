@@ -113,22 +113,62 @@ async function parseParticipantDocuments(documents) {
 
 export function subscribeToParticipants(onData, onError) {
   let latestSnapshotVersion = 0;
+  let unsubscribe = () => {};
 
-  return onSnapshot(
+  const handleSnapshot = (snapshotDocs) => {
+    const currentVersion = ++latestSnapshotVersion;
+    parseParticipantDocuments(snapshotDocs)
+      .then((participants) => {
+        if (currentVersion === latestSnapshotVersion) {
+          participants.sort((a, b) => {
+            const scoreDiff = (b.totalScore || 0) - (a.totalScore || 0);
+            if (scoreDiff !== 0) return scoreDiff;
+            return (a.totalTimeSeconds || 0) - (b.totalTimeSeconds || 0);
+          });
+          onData(participants.slice(0, TOP_PARTICIPANTS_LIMIT));
+        }
+      })
+      .catch(onError);
+  };
+
+  unsubscribe = onSnapshot(
     participantQuery(),
-    (snapshot) => {
-      const currentVersion = ++latestSnapshotVersion;
-      parseParticipantDocuments(snapshot.docs)
-        .then((participants) => {
-          if (currentVersion === latestSnapshotVersion) onData(participants);
-        })
-        .catch(onError);
+    (snapshot) => handleSnapshot(snapshot.docs),
+    (err) => {
+      if (err?.code === "failed-precondition") {
+        console.warn(
+          "Composite index missing or building; falling back to full collection listener.",
+        );
+        unsubscribe = onSnapshot(
+          collection(db, "participants"),
+          (snapshot) => handleSnapshot(snapshot.docs),
+          onError,
+        );
+      } else if (onError) {
+        onError(err);
+      }
     },
-    onError,
   );
+
+  return () => unsubscribe();
 }
 
 export async function fetchParticipantsFromServer() {
-  const snapshot = await getDocsFromServer(participantQuery());
-  return parseParticipantDocuments(snapshot.docs);
+  try {
+    const snapshot = await getDocsFromServer(participantQuery());
+    return parseParticipantDocuments(snapshot.docs);
+  } catch (err) {
+    if (err?.code === "failed-precondition") {
+      console.warn("Composite index missing or building; falling back to in-memory sort.");
+      const snapshot = await getDocsFromServer(collection(db, "participants"));
+      const participants = await parseParticipantDocuments(snapshot.docs);
+      participants.sort((a, b) => {
+        const scoreDiff = (b.totalScore || 0) - (a.totalScore || 0);
+        if (scoreDiff !== 0) return scoreDiff;
+        return (a.totalTimeSeconds || 0) - (b.totalTimeSeconds || 0);
+      });
+      return participants.slice(0, TOP_PARTICIPANTS_LIMIT);
+    }
+    throw err;
+  }
 }
