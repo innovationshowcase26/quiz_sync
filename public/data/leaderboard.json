@@ -2,12 +2,12 @@
   {
     "name": "Sabbu",
     "registeredAt": "2026-10-30T19:14:48.788Z",
-    "totalTestsAppeared": 3,
-    "totalScore": 5,
-    "totalQuestions": 15,
-    "overallAccuracy": 33,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T19:47:56.004Z",
+    "totalTestsAppeared": 4,
+    "totalScore": 7,
+    "totalQuestions": 20,
+    "overallAccuracy": 35,
+    "isPrizeEligible": true,
+    "lastUpdated": "2026-10-30T20:05:09.296Z",
     "tests": [
       {
         "boothId": "booth-1",
@@ -30,6 +30,17 @@
         "percentage": 40,
         "timeTakenSeconds": 43,
         "completedAt": "2026-10-30T19:47:56.004Z"
+      },
+      {
+        "boothId": "booth-5",
+        "boothNumber": 5,
+        "boothTitle": "Enterprise AI Platform & Intelligent AI Operations",
+        "topicTitle": "Enterprise AI Platform & Intelligent AI Operations",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 42,
+        "completedAt": "2026-10-30T20:05:09.296Z"
       },
       {
         "boothId": "booth-9",
