@@ -113,6 +113,29 @@
     ]
   },
   {
+    "name": "Ramya Balasubramanian",
+    "registeredAt": "2026-10-31T09:58:31.684Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 3,
+    "totalQuestions": 5,
+    "overallAccuracy": 60,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-10-31T10:00:02.533Z",
+    "tests": [
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "topicTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 90,
+        "completedAt": "2026-10-31T10:00:02.533Z"
+      }
+    ]
+  },
+  {
     "name": "Lakshmi",
     "registeredAt": "2026-10-31T06:46:15.172Z",
     "totalTestsAppeared": 2,
@@ -168,17 +191,6 @@
         "completedAt": "2026-10-31T07:43:18.765Z"
       }
     ]
-  },
-  {
-    "name": "Ramya Balasubramanian",
-    "registeredAt": "2026-10-31T09:58:31.684Z",
-    "totalTestsAppeared": 0,
-    "totalScore": 0,
-    "totalQuestions": 0,
-    "overallAccuracy": 0,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-10-31T09:58:31.684Z",
-    "tests": []
   },
   {
     "name": "Padma Naresh",
