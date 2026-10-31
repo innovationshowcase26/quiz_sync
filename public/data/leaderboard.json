@@ -90,6 +90,40 @@
     ]
   },
   {
+    "name": "Satya",
+    "registeredAt": "2026-10-31T17:03:25.550Z",
+    "totalTestsAppeared": 2,
+    "totalScore": 4,
+    "totalQuestions": 10,
+    "overallAccuracy": 40,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-10-31T17:06:34.081Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data Governance, Lineage & Zero Trust",
+        "topicTitle": "Data Governance, Lineage & Zero Trust",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 67,
+        "completedAt": "2026-10-31T17:04:33.837Z"
+      },
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "topicTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 90,
+        "completedAt": "2026-10-31T17:06:34.081Z"
+      }
+    ]
+  },
+  {
     "name": "sabbu",
     "registeredAt": "2026-10-31T08:10:43.023Z",
     "totalTestsAppeared": 1,
