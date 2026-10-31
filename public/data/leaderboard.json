@@ -1,47 +1,36 @@
 [
   {
     "name": "Sabbu",
-    "registeredAt": "2026-10-30T20:34:01.561Z",
+    "registeredAt": "2026-10-31T06:04:15.446Z",
     "totalTestsAppeared": 2,
-    "totalScore": 6,
+    "totalScore": 3,
     "totalQuestions": 10,
-    "overallAccuracy": 60,
+    "overallAccuracy": 30,
     "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T20:37:31.806Z",
+    "lastUpdated": "2026-10-31T06:15:58.143Z",
     "tests": [
       {
         "boothId": "booth-1",
         "boothNumber": 1,
         "boothTitle": "Data Governance, Lineage & Zero Trust",
         "topicTitle": "Data Governance, Lineage & Zero Trust",
-        "score": 3,
+        "score": 0,
         "totalQuestions": 5,
-        "percentage": 60,
-        "timeTakenSeconds": 49,
-        "completedAt": "2026-10-30T20:37:31.806Z"
+        "percentage": 0,
+        "timeTakenSeconds": 21,
+        "completedAt": "2026-10-31T06:04:38.094Z"
       },
       {
-        "boothId": "booth-6",
-        "boothNumber": 6,
-        "boothTitle": "AI Business Intelligence & Process Automation",
-        "topicTitle": "AI Business Intelligence & Process Automation",
+        "boothId": "booth-2",
+        "boothNumber": 2,
+        "boothTitle": "Autonomous Agents & Digital Identity",
+        "topicTitle": "Autonomous Agents & Digital Identity",
         "score": 3,
         "totalQuestions": 5,
         "percentage": 60,
-        "timeTakenSeconds": 12,
-        "completedAt": "2026-10-30T20:35:55.478Z"
+        "timeTakenSeconds": 58,
+        "completedAt": "2026-10-31T06:15:58.143Z"
       }
     ]
-  },
-  {
-    "name": "Sabbu",
-    "registeredAt": "2026-10-30T20:45:14.053Z",
-    "totalTestsAppeared": 0,
-    "totalScore": 0,
-    "totalQuestions": 0,
-    "overallAccuracy": 0,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-10-30T20:45:14.053Z",
-    "tests": []
   }
 ]
