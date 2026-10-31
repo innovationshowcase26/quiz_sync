@@ -240,12 +240,12 @@
   {
     "name": "sabbu sabbu",
     "registeredAt": "2026-10-31T07:20:11.188Z",
-    "totalTestsAppeared": 1,
+    "totalTestsAppeared": 2,
     "totalScore": 1,
     "totalQuestions": 5,
     "overallAccuracy": 20,
     "isPrizeEligible": false,
-    "lastUpdated": "2026-10-31T07:43:18.765Z",
+    "lastUpdated": "2026-10-31T20:13:05.951Z",
     "tests": [
       {
         "boothId": "booth-1",
@@ -257,6 +257,17 @@
         "percentage": 20,
         "timeTakenSeconds": 90,
         "completedAt": "2026-10-31T07:43:18.765Z"
+      },
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Cloud Modernization & Data Platforms",
+        "topicTitle": "Cloud Modernization & Data Platforms",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 18,
+        "completedAt": "2026-10-31T20:13:05.951Z"
       }
     ]
   },
