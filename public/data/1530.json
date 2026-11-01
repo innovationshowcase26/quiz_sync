@@ -1,0 +1,72 @@
+[
+  {
+    "id": "+919962230623",
+    "name": "Chandra J",
+    "email": "+919962230623",
+    "registeredAt": "2026-11-01T15:22:15.730Z",
+    "totalTestsAppeared": 4,
+    "totalScore": 6,
+    "totalQuestions": 20,
+    "totalTimeSeconds": 37,
+    "completionTime": "15:20",
+    "overallAccuracy": 30,
+    "isPrizeEligible": true,
+    "summary": {
+      "totalQuestions": 20,
+      "totalTimeSeconds": 37,
+      "accuracy": 30,
+      "totalScore": 6,
+      "boothsCompleted": 4,
+      "isTargetReached": true,
+      "isPrizeEligible": true,
+      "completionTime": "15:20"
+    },
+    "lastUpdated": "2026-11-01T18:20:59.379Z",
+    "tests": [
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "Engineering Efficiency & Enhancing Productivity",
+        "topicTitle": "Engineering Efficiency & Enhancing Productivity",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 9,
+        "completedAt": "2026-11-01T15:22:50.204Z"
+      },
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Modernization And Transformation",
+        "topicTitle": "Modernization And Transformation",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 14,
+        "completedAt": "2026-11-01T15:46:46.193Z"
+      },
+      {
+        "boothId": "booth-5",
+        "boothNumber": 5,
+        "boothTitle": "AI Enablements",
+        "topicTitle": "AI Enablements",
+        "score": 0,
+        "totalQuestions": 5,
+        "percentage": 0,
+        "timeTakenSeconds": 7,
+        "completedAt": "2026-11-01T18:20:18.542Z"
+      },
+      {
+        "boothId": "booth-6",
+        "boothNumber": 6,
+        "boothTitle": "Business Enablers - Booth 1",
+        "topicTitle": "Business Enablers - Booth 1",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 7,
+        "completedAt": "2026-11-01T18:20:59.379Z"
+      }
+    ]
+  }
+]
