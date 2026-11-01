@@ -261,6 +261,29 @@
     ]
   },
   {
+    "name": "Shamaaz",
+    "registeredAt": "2026-11-01T12:33:26.095Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 1,
+    "totalQuestions": 5,
+    "overallAccuracy": 20,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T12:33:53.602Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data Governance, Lineage & Zero Trust",
+        "topicTitle": "Data Governance, Lineage & Zero Trust",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 16,
+        "completedAt": "2026-11-01T12:33:53.602Z"
+      }
+    ]
+  },
+  {
     "name": "sabbu sabbu",
     "registeredAt": "2026-10-31T07:20:11.188Z",
     "totalTestsAppeared": 2,
@@ -375,6 +398,17 @@
     ]
   },
   {
+    "name": "Ab",
+    "registeredAt": "2026-11-01T13:04:21.593Z",
+    "totalTestsAppeared": 0,
+    "totalScore": 0,
+    "totalQuestions": 0,
+    "overallAccuracy": 0,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T13:04:21.593Z",
+    "tests": []
+  },
+  {
     "name": "Mike",
     "registeredAt": "2026-11-01T08:06:04.857Z",
     "totalTestsAppeared": 0,
@@ -384,28 +418,5 @@
     "isPrizeEligible": false,
     "lastUpdated": "2026-11-01T08:06:04.857Z",
     "tests": []
-  },
-  {
-    "name": "Naga Jyothi Devarapalli",
-    "registeredAt": "2026-11-01T08:00:32.920Z",
-    "totalTestsAppeared": 1,
-    "totalScore": 0,
-    "totalQuestions": 5,
-    "overallAccuracy": 0,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-11-01T08:02:02.286Z",
-    "tests": [
-      {
-        "boothId": "booth-1",
-        "boothNumber": 1,
-        "boothTitle": "Data Governance, Lineage & Zero Trust",
-        "topicTitle": "Data Governance, Lineage & Zero Trust",
-        "score": 0,
-        "totalQuestions": 5,
-        "percentage": 0,
-        "timeTakenSeconds": 50,
-        "completedAt": "2026-11-01T08:02:02.286Z"
-      }
-    ]
   }
 ]
