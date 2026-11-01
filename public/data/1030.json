@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": "9640296405",
+    "name": "sabbu",
+    "email": "9640296405",
+    "registeredAt": "2026-11-01T14:32:53.608Z",
+    "totalTestsAppeared": 4,
+    "totalScore": 10,
+    "totalQuestions": 20,
+    "totalTimeSeconds": 58,
+    "completionTime": "10:20",
+    "overallAccuracy": 50,
+    "isPrizeEligible": true,
+    "summary": {
+      "totalScore": 10,
+      "isTargetReached": true,
+      "completionTime": "10:20",
+      "boothsCompleted": 4,
+      "totalQuestions": 20,
+      "accuracy": 50,
+      "isPrizeEligible": true,
+      "totalTimeSeconds": 58
+    },
+    "lastUpdated": "2026-11-01T17:49:31.310Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data / Security",
+        "topicTitle": "Data / Security",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 23,
+        "completedAt": "2026-11-01T14:47:06.835Z"
+      },
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "Engineering Efficiency & Enhancing Productivity",
+        "topicTitle": "Engineering Efficiency & Enhancing Productivity",
+        "score": 4,
+        "totalQuestions": 5,
+        "percentage": 80,
+        "timeTakenSeconds": 13,
+        "completedAt": "2026-11-01T14:57:08.701Z"
+      },
+      {
+        "boothId": "booth-5",
+        "boothNumber": 5,
+        "boothTitle": "AI Enablements",
+        "topicTitle": "AI Enablements",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 10,
+        "completedAt": "2026-11-01T17:49:31.310Z"
+      },
+      {
+        "boothId": "booth-9",
+        "boothNumber": 9,
+        "boothTitle": "Technology Enablers - Booth 2",
+        "topicTitle": "Technology Enablers - Booth 2",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 12,
+        "completedAt": "2026-11-01T17:30:16.739Z"
+      }
+    ]
+  }
+]
