@@ -318,6 +318,40 @@
     ]
   },
   {
+    "name": "Padma Naresh",
+    "registeredAt": "2026-10-31T08:36:05.791Z",
+    "totalTestsAppeared": 2,
+    "totalScore": 1,
+    "totalQuestions": 10,
+    "overallAccuracy": 10,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T10:12:37.840Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data Governance, Lineage & Zero Trust",
+        "topicTitle": "Data Governance, Lineage & Zero Trust",
+        "score": 0,
+        "totalQuestions": 5,
+        "percentage": 0,
+        "timeTakenSeconds": 57,
+        "completedAt": "2026-10-31T08:37:03.776Z"
+      },
+      {
+        "boothId": "booth-2",
+        "boothNumber": 2,
+        "boothTitle": "Autonomous Agents & Digital Identity",
+        "topicTitle": "Autonomous Agents & Digital Identity",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 15,
+        "completedAt": "2026-11-01T10:12:37.840Z"
+      }
+    ]
+  },
+  {
     "name": "Sushma Gurung",
     "registeredAt": "2026-11-01T08:06:39.641Z",
     "totalTestsAppeared": 1,
@@ -371,29 +405,6 @@
         "percentage": 0,
         "timeTakenSeconds": 50,
         "completedAt": "2026-11-01T08:02:02.286Z"
-      }
-    ]
-  },
-  {
-    "name": "Padma Naresh",
-    "registeredAt": "2026-10-31T08:36:05.791Z",
-    "totalTestsAppeared": 1,
-    "totalScore": 0,
-    "totalQuestions": 5,
-    "overallAccuracy": 0,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-10-31T08:37:03.776Z",
-    "tests": [
-      {
-        "boothId": "booth-1",
-        "boothNumber": 1,
-        "boothTitle": "Data Governance, Lineage & Zero Trust",
-        "topicTitle": "Data Governance, Lineage & Zero Trust",
-        "score": 0,
-        "totalQuestions": 5,
-        "percentage": 0,
-        "timeTakenSeconds": 57,
-        "completedAt": "2026-10-31T08:37:03.776Z"
       }
     ]
   }
