@@ -13,13 +13,13 @@
     "isPrizeEligible": true,
     "summary": {
       "totalScore": 10,
-      "isTargetReached": true,
-      "completionTime": "10:20",
-      "boothsCompleted": 4,
+      "totalTimeSeconds": 58,
       "totalQuestions": 20,
-      "accuracy": 50,
+      "isTargetReached": true,
       "isPrizeEligible": true,
-      "totalTimeSeconds": 58
+      "completionTime": "10:20",
+      "accuracy": 50,
+      "boothsCompleted": 4
     },
     "lastUpdated": "2026-11-01T17:49:31.310Z",
     "tests": [
