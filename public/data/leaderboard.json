@@ -204,6 +204,29 @@
     ]
   },
   {
+    "name": "SRINATH",
+    "registeredAt": "2026-11-01T08:01:25.009Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 3,
+    "totalQuestions": 5,
+    "overallAccuracy": 60,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T08:03:26.366Z",
+    "tests": [
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Cloud Modernization & Data Platforms",
+        "topicTitle": "Cloud Modernization & Data Platforms",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 90,
+        "completedAt": "2026-11-01T08:03:26.366Z"
+      }
+    ]
+  },
+  {
     "name": "Lakshmi",
     "registeredAt": "2026-10-31T06:46:15.172Z",
     "totalTestsAppeared": 2,
@@ -268,6 +291,86 @@
         "percentage": 20,
         "timeTakenSeconds": 18,
         "completedAt": "2026-10-31T20:13:05.951Z"
+      }
+    ]
+  },
+  {
+    "name": "Sunil Kumar",
+    "registeredAt": "2026-11-01T08:00:04.670Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 1,
+    "totalQuestions": 5,
+    "overallAccuracy": 20,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T08:01:02.182Z",
+    "tests": [
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "topicTitle": "AI-Powered Software Engineering & Developer Productivity",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 35,
+        "completedAt": "2026-11-01T08:01:02.182Z"
+      }
+    ]
+  },
+  {
+    "name": "Sushma Gurung",
+    "registeredAt": "2026-11-01T08:06:39.641Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 1,
+    "totalQuestions": 5,
+    "overallAccuracy": 20,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T08:08:21.765Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data Governance, Lineage & Zero Trust",
+        "topicTitle": "Data Governance, Lineage & Zero Trust",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 84,
+        "completedAt": "2026-11-01T08:08:21.765Z"
+      }
+    ]
+  },
+  {
+    "name": "Mike",
+    "registeredAt": "2026-11-01T08:06:04.857Z",
+    "totalTestsAppeared": 0,
+    "totalScore": 0,
+    "totalQuestions": 0,
+    "overallAccuracy": 0,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T08:06:04.857Z",
+    "tests": []
+  },
+  {
+    "name": "Naga Jyothi Devarapalli",
+    "registeredAt": "2026-11-01T08:00:32.920Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 0,
+    "totalQuestions": 5,
+    "overallAccuracy": 0,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T08:02:02.286Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data Governance, Lineage & Zero Trust",
+        "topicTitle": "Data Governance, Lineage & Zero Trust",
+        "score": 0,
+        "totalQuestions": 5,
+        "percentage": 0,
+        "timeTakenSeconds": 50,
+        "completedAt": "2026-11-01T08:02:02.286Z"
       }
     ]
   },
