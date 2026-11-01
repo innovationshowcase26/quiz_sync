@@ -2,11 +2,9 @@ export const DEFAULT_REPO_OWNER =
   import.meta.env.VITE_GITHUB_REPO_OWNER || "innovationshowcase26";
 export const DEFAULT_REPO_NAME =
   import.meta.env.VITE_GITHUB_REPO_NAME || "quiz_sync";
-const DEFAULT_BRANCH = import.meta.env.VITE_GITHUB_BRANCH || "main";
-const LEADERBOARD_FILE_PATH = "public/data/leaderboard.json";
+export const DEFAULT_BRANCH = import.meta.env.VITE_GITHUB_BRANCH || "main";
 
 export const LOCAL_STORAGE_TOKEN_KEY = "quiz_sync_github_token";
-export const LOCAL_STORAGE_AUTO_COMMIT_KEY = "quiz_sync_auto_commit_enabled";
 
 export function getStoredGitHubToken() {
   const local = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
@@ -26,16 +24,6 @@ export function saveStoredGitHubToken(token) {
   } else {
     localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, token.trim());
   }
-}
-
-export function getAutoCommitPreference() {
-  const saved = localStorage.getItem(LOCAL_STORAGE_AUTO_COMMIT_KEY);
-  if (saved === null) return true; // Default to enabled
-  return saved === "true";
-}
-
-export function saveAutoCommitPreference(enabled) {
-  localStorage.setItem(LOCAL_STORAGE_AUTO_COMMIT_KEY, enabled ? "true" : "false");
 }
 
 function utf8ToBase64(str) {
@@ -58,21 +46,31 @@ function base64ToUtf8(str) {
   }
 }
 
-export async function fetchCurrentLeaderboardSha(
+/**
+ * Fetch SHA and decoded content for any file path in the repository.
+ * Returns { sha: null, content: null } if file does not exist yet (404).
+ */
+export async function fetchFileSha(
+  filePath,
   token,
   owner = DEFAULT_REPO_OWNER,
   repo = DEFAULT_REPO_NAME,
   branch = DEFAULT_BRANCH,
 ) {
-  // Use timestamp query param and cache: 'no-store' to prevent browser HTTP caching
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${LEADERBOARD_FILE_PATH}?ref=${branch}&_t=${Date.now()}`;
+  const activeToken = (token || getStoredGitHubToken() || "").trim();
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}?ref=${branch}&_t=${Date.now()}`;
+
+  const headers = {
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  if (activeToken) {
+    headers.Authorization = `Bearer ${activeToken}`;
+  }
+
   const response = await fetch(url, {
     cache: "no-store",
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${token}`,
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
+    headers,
   });
 
   if (response.status === 404) {
@@ -83,7 +81,7 @@ export async function fetchCurrentLeaderboardSha(
     const errorBody = await response.json().catch(() => ({}));
     throw new Error(
       errorBody.message ||
-        `GitHub API returned status ${response.status} while fetching current file.`,
+        `GitHub API returned status ${response.status} while fetching ${filePath}.`,
     );
   }
 
@@ -97,8 +95,22 @@ export async function fetchCurrentLeaderboardSha(
   };
 }
 
-export async function commitLeaderboardToGitHub({
-  participants,
+export async function fetchCurrentLeaderboardSha(
+  token,
+  owner = DEFAULT_REPO_OWNER,
+  repo = DEFAULT_REPO_NAME,
+  branch = DEFAULT_BRANCH,
+) {
+  return fetchFileSha("public/data/leaderboard.json", token, owner, repo, branch);
+}
+
+/**
+ * Commits a JSON payload directly to a file on GitHub (e.g. public/data/1030.json).
+ * Handles both new file creation and updates.
+ */
+export async function commitJsonFileToGitHub({
+  filePath,
+  data,
   token,
   customMessage,
   owner = DEFAULT_REPO_OWNER,
@@ -108,19 +120,18 @@ export async function commitLeaderboardToGitHub({
   const activeToken = (token || getStoredGitHubToken() || "").trim();
   if (!activeToken) {
     throw new Error(
-      "GitHub Personal Access Token is required to commit leaderboard.json. Please enter your token in Settings or set VITE_GITHUB_TOKEN in .env.",
+      "GitHub Personal Access Token is required to commit to GitHub. Please configure your token in GitHub Settings.",
     );
   }
 
-  const jsonString = `${JSON.stringify(participants, null, 2)}\n`;
+  const jsonString = `${JSON.stringify(data, null, 2)}\n`;
 
-  // Helper to attempt commit with a given SHA
   const executeCommit = async (shaToUse) => {
     const message =
       customMessage ||
-      `chore: sync leaderboard data (${participants.length} participants)`;
+      `chore: sync ${filePath} (${Array.isArray(data) ? data.length : 1} records)`;
 
-    const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${LEADERBOARD_FILE_PATH}`;
+    const putUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
     const putBody = {
       message,
       content: utf8ToBase64(jsonString),
@@ -144,13 +155,14 @@ export async function commitLeaderboardToGitHub({
   };
 
   // 1. Fetch current file to get latest sha
-  let current = await fetchCurrentLeaderboardSha(activeToken, owner, repo, branch);
+  let current = await fetchFileSha(filePath, activeToken, owner, repo, branch);
 
   if (current.sha && current.content === jsonString) {
     return {
       status: "unchanged",
-      message: "Leaderboard in GitHub is already up to date.",
+      message: `${filePath} in GitHub is already up to date.`,
       sha: current.sha,
+      commitSha: current.sha.slice(0, 7),
       commitUrl: null,
     };
   }
@@ -159,13 +171,13 @@ export async function commitLeaderboardToGitHub({
 
   // If a 409 conflict occurs (cached/mismatched SHA), re-fetch latest SHA and retry once
   if (response.status === 409) {
-    console.warn("SHA mismatch detected (409). Fetching freshest SHA from GitHub and retrying...");
-    current = await fetchCurrentLeaderboardSha(activeToken, owner, repo, branch);
+    current = await fetchFileSha(filePath, activeToken, owner, repo, branch);
     if (current.content === jsonString) {
       return {
         status: "unchanged",
-        message: "Leaderboard in GitHub is already up to date.",
+        message: `${filePath} in GitHub is already up to date.`,
         sha: current.sha,
+        commitSha: current.sha.slice(0, 7),
         commitUrl: null,
       };
     }
@@ -182,8 +194,7 @@ export async function commitLeaderboardToGitHub({
     if (response.status === 404 || response.status === 403) {
       throw new Error(
         errorBody.message ||
-          "GitHub permissions error: Ensure the token has 'Contents: Read and Write' permission for " +
-            `${owner}/${repo}.`,
+          `GitHub permissions error: Ensure the token has 'Contents: Read and Write' permission for ${owner}/${repo}.`,
       );
     }
     throw new Error(
@@ -205,8 +216,8 @@ export async function commitLeaderboardToGitHub({
   return {
     status: "committed",
     message: deployResult.success
-      ? "Committed to GitHub & triggered deployment workflow!"
-      : "Committed to GitHub successfully!",
+      ? `Committed ${filePath} to GitHub & triggered deployment!`
+      : `Committed ${filePath} to GitHub successfully!`,
     commitSha: result.commit?.sha?.slice(0, 7) || "unknown",
     fullCommitSha: result.commit?.sha,
     commitUrl: result.commit?.html_url,
@@ -216,6 +227,25 @@ export async function commitLeaderboardToGitHub({
       : deployResult.reason,
     timestamp: new Date().toISOString(),
   };
+}
+
+export async function commitLeaderboardToGitHub({
+  participants,
+  token,
+  customMessage,
+  owner,
+  repo,
+  branch,
+}) {
+  return commitJsonFileToGitHub({
+    filePath: "public/data/leaderboard.json",
+    data: participants,
+    token,
+    customMessage,
+    owner,
+    repo,
+    branch,
+  });
 }
 
 export async function triggerDeployWorkflow({
@@ -257,4 +287,3 @@ export async function triggerDeployWorkflow({
     return { success: false, reason: error.message };
   }
 }
-

@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  fetchParticipantsFromServer,
-  subscribeToParticipants,
+  fetchTopParticipantsForSlot,
+  parseTimeToMinutes,
 } from "./services/firebase.js";
 import {
+  DEFAULT_BRANCH,
   DEFAULT_REPO_NAME,
   DEFAULT_REPO_OWNER,
-  commitLeaderboardToGitHub,
+  commitJsonFileToGitHub,
   fetchCurrentLeaderboardSha,
-  getAutoCommitPreference,
+  fetchFileSha,
   getStoredGitHubToken,
-  saveAutoCommitPreference,
   saveStoredGitHubToken,
 } from "./services/github.js";
+import { TIME_SLOTS } from "./services/slots.js";
 
 function formatDate(value) {
   if (!value) return "Not available";
@@ -35,29 +36,40 @@ function formatDuration(seconds) {
 }
 
 function App() {
+  // Main view state - NO data fetched on page load
+  const [activeSlot, setActiveSlot] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [loadingSlot, setLoadingSlot] = useState(false);
   const [error, setError] = useState("");
   const [jsonUrl, setJsonUrl] = useState("");
 
-  // GitHub integration state
+  // Sync Modal state
+  const [syncModalOpen, setSyncModalOpen] = useState(false);
+  const [syncingSlotId, setSyncingSlotId] = useState(null);
+  const [slotStates, setSlotStates] = useState({}); // { [id]: { status, sha, count, time, error, commitUrl, data } }
+  const [slotFilter, setSlotFilter] = useState("");
+
+  // Custom/Test slot helper state
+  const [showCustomTester, setShowCustomTester] = useState(false);
+  const [customStart, setCustomStart] = useState("09:59");
+  const [customEnd, setCustomEnd] = useState("10:31");
+  const [customFileId, setCustomFileId] = useState("1030");
+  const [customSyncing, setCustomSyncing] = useState(false);
+
+  // GitHub token settings modal state
   const [githubToken, setGithubToken] = useState(() => getStoredGitHubToken());
-  const [autoCommit, setAutoCommit] = useState(() => getAutoCommitPreference());
-  const [committing, setCommitting] = useState(false);
-  const [commitStatus, setCommitStatus] = useState(null); // { type: 'success' | 'unchanged' | 'error', message, commitSha, commitUrl, time }
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tokenInput, setTokenInput] = useState(() => getStoredGitHubToken());
   const [testingToken, setTestingToken] = useState(false);
   const [testResult, setTestResult] = useState(null);
 
-  const lastCommittedJsonRef = useRef("");
-  const autoCommitTimerRef = useRef(null);
+  // General notification banner
+  const [bannerStatus, setBannerStatus] = useState(null); // { type: 'success' | 'unchanged' | 'error', message, commitSha, commitUrl, time }
 
-  // Generate downloadable JSON
+  // Generate downloadable JSON blob for the currently active slot
   useEffect(() => {
-    if (participants.length === 0) {
+    if (!participants || participants.length === 0) {
       setJsonUrl("");
       return undefined;
     }
@@ -71,148 +83,115 @@ function App() {
     return () => URL.revokeObjectURL(downloadUrl);
   }, [participants]);
 
-  // Handler to perform commit to GitHub
-  const handleCommitToGitHub = useCallback(
-    async (currentParticipants, isAutomated = false) => {
-      const dataToCommit = currentParticipants || participants;
-      if (!dataToCommit || dataToCommit.length === 0) return;
-
-      const activeToken = githubToken || getStoredGitHubToken();
+  // Handler to sync a single slot
+  const handleSyncSlot = useCallback(
+    async (slot) => {
+      const activeToken = (githubToken || getStoredGitHubToken() || "").trim();
       if (!activeToken) {
-        if (!isAutomated) {
-          setSettingsOpen(true);
-          setCommitStatus({
-            type: "error",
-            message: "GitHub token missing. Please save your Personal Access Token below.",
-          });
-        }
+        setSettingsOpen(true);
+        setBannerStatus({
+          type: "error",
+          message: "GitHub token missing. Please save your Personal Access Token below to publish to GitHub.",
+        });
         return;
       }
 
-      const jsonString = `${JSON.stringify(dataToCommit, null, 2)}\n`;
-      if (isAutomated && lastCommittedJsonRef.current === jsonString) {
-        return;
-      }
+      setSyncingSlotId(slot.id);
+      setLoadingSlot(true);
+      setError("");
 
-      setCommitting(true);
       try {
-        const result = await commitLeaderboardToGitHub({
-          participants: dataToCommit,
-          token: activeToken,
+        // 1. Pull top 10 records from DB matching slot criteria
+        const topRecords = await fetchTopParticipantsForSlot({
+          startMinutes: slot.startMinutes,
+          endMinutes: slot.endMinutes,
+          limitCount: 10,
         });
 
-        lastCommittedJsonRef.current = jsonString;
+        // 2. Publish JSON to GitHub at public/data/${slot.fileName}
+        const commitResult = await commitJsonFileToGitHub({
+          filePath: slot.filePath,
+          data: topRecords,
+          token: activeToken,
+          customMessage: `chore: sync ${slot.timeLabel} leaderboard (${topRecords.length} records) [${slot.rangeLabel}]`,
+        });
 
-        if (result.status === "committed") {
-          setCommitStatus({
-            type: "success",
-            message: result.deployTriggered
-              ? `Committed (${result.commitSha}) & triggered Deploy Action!`
-              : `Committed to GitHub!`,
-            commitSha: result.commitSha,
-            commitUrl: result.commitUrl,
+        const syncInfo = {
+          status: "success",
+          count: topRecords.length,
+          sha: commitResult.commitSha,
+          commitUrl: commitResult.commitUrl,
+          time: new Date().toLocaleTimeString(),
+          data: topRecords,
+        };
+
+        setSlotStates((prev) => ({
+          ...prev,
+          [slot.id]: syncInfo,
+        }));
+
+        // Set as active view on page
+        setActiveSlot(slot);
+        setParticipants(topRecords);
+        setLastUpdated(new Date());
+
+        setBannerStatus({
+          type: "success",
+          message: `Slot ${slot.timeLabel} (${slot.rangeLabel}) synced successfully! ${topRecords.length} players published to ${slot.filePath}`,
+          commitSha: commitResult.commitSha,
+          commitUrl: commitResult.commitUrl,
+          time: syncInfo.time,
+        });
+      } catch (syncErr) {
+        console.error("Sync error:", syncErr);
+        const errMessage = syncErr.message || "Failed to sync slot.";
+        setSlotStates((prev) => ({
+          ...prev,
+          [slot.id]: {
+            status: "error",
+            error: errMessage,
             time: new Date().toLocaleTimeString(),
-          });
-        } else if (result.status === "unchanged") {
-          setCommitStatus({
-            type: "unchanged",
-            message: `GitHub repository is already up to date.`,
-            commitSha: result.sha?.slice(0, 7),
-            time: new Date().toLocaleTimeString(),
-          });
-        }
-      } catch (commitErr) {
-        setCommitStatus({
+          },
+        }));
+        setBannerStatus({
           type: "error",
-          message: commitErr.message || "Failed to commit to GitHub.",
+          message: `Error syncing slot ${slot.timeLabel}: ${errMessage}`,
           time: new Date().toLocaleTimeString(),
         });
       } finally {
-        setCommitting(false);
+        setSyncingSlotId(null);
+        setLoadingSlot(false);
       }
     },
-    [participants, githubToken],
+    [githubToken],
   );
 
-  // Handle manual Refresh button
-  const handleRefresh = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      const freshData = await fetchParticipantsFromServer();
-      setParticipants(freshData);
-      setLastUpdated(new Date());
-      setError("");
+  // Handler for custom / arbitrary time slot test
+  const handleCustomSync = async () => {
+    const startM = parseTimeToMinutes(customStart);
+    const endM = parseTimeToMinutes(customEnd);
 
-      if (autoCommit && freshData.length > 0) {
-        handleCommitToGitHub(freshData, true);
-      }
-    } catch (loadError) {
-      setError(loadError.message || "Unable to load leaderboard data.");
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
+    if (startM === null || endM === null) {
+      alert("Please provide valid times in HH:mm format (e.g. 09:59 and 10:31).");
+      return;
     }
-  }, [autoCommit, handleCommitToGitHub]);
 
-  const autoCommitRef = useRef(autoCommit);
-  autoCommitRef.current = autoCommit;
-
-  const handleCommitRef = useRef(handleCommitToGitHub);
-  handleCommitRef.current = handleCommitToGitHub;
-
-  // Firestore live subscription & auto-commit on incoming data
-  useEffect(() => {
-    const unsubscribe = subscribeToParticipants(
-      (data) => {
-        setParticipants(data);
-        setLastUpdated(new Date());
-        setLoading(false);
-        setError("");
-
-        // Auto-commit debounce when fresh results arrive
-        if (autoCommitRef.current && data && data.length > 0) {
-          if (autoCommitTimerRef.current) {
-            clearTimeout(autoCommitTimerRef.current);
-          }
-          autoCommitTimerRef.current = setTimeout(() => {
-            if (handleCommitRef.current) {
-              handleCommitRef.current(data, true);
-            }
-          }, 1200);
-        }
-      },
-      (subscriptionError) => {
-        setError(subscriptionError.message || "Unable to connect to Firestore.");
-        setLoading(false);
-      },
-    );
-
-    return () => {
-      unsubscribe();
-      if (autoCommitTimerRef.current) {
-        clearTimeout(autoCommitTimerRef.current);
-      }
+    const cleanId = (customFileId || "custom").replace(/[^a-zA-Z0-9_-]/g, "");
+    const customSlotObj = {
+      id: cleanId,
+      timeLabel: `${customStart}-${customEnd}`,
+      fileName: `${cleanId}.json`,
+      filePath: `public/data/${cleanId}.json`,
+      startMinutes: startM,
+      endMinutes: endM,
+      startTimeStr: customStart,
+      endTimeStr: customEnd,
+      rangeLabel: `${customStart} to ${customEnd}`,
     };
-  }, []);
 
-  // Toggle auto-commit preference
-  const handleToggleAutoCommit = (e) => {
-    const enabled = e.target.checked;
-    setAutoCommit(enabled);
-    saveAutoCommitPreference(enabled);
-  };
-
-  // Save token from modal
-  const handleSaveToken = () => {
-    const cleaned = tokenInput.trim();
-    setGithubToken(cleaned);
-    saveStoredGitHubToken(cleaned);
-    setTestResult({
-      type: "success",
-      message: cleaned
-        ? "Token saved successfully!"
-        : "Token cleared.",
-    });
+    setCustomSyncing(true);
+    await handleSyncSlot(customSlotObj);
+    setCustomSyncing(false);
   };
 
   // Test token connection
@@ -229,14 +208,13 @@ function App() {
     setTestingToken(true);
     setTestResult(null);
     try {
-      const info = await fetchCurrentLeaderboardSha(tokenToTest);
+      const info = await fetchFileSha("README.md", tokenToTest);
       setTestResult({
         type: "success",
-        message: `Connected successfully! Existing file found (SHA: ${
-          info.sha ? info.sha.slice(0, 7) : "None"
+        message: `Connected successfully to GitHub! (README SHA: ${
+          info.sha ? info.sha.slice(0, 7) : "found"
         }). Ready to commit.`,
       });
-      // Also auto-save if successful
       setGithubToken(tokenToTest);
       saveStoredGitHubToken(tokenToTest);
     } catch (testErr) {
@@ -249,8 +227,36 @@ function App() {
     }
   };
 
+  const handleSaveToken = () => {
+    const cleaned = tokenInput.trim();
+    setGithubToken(cleaned);
+    saveStoredGitHubToken(cleaned);
+    setTestResult({
+      type: "success",
+      message: cleaned ? "Token saved successfully!" : "Token cleared.",
+    });
+  };
+
+  // Filtered slots in popup
+  const filteredSlots = useMemo(() => {
+    const q = slotFilter.trim().toLowerCase();
+    if (!q) return TIME_SLOTS;
+    return TIME_SLOTS.filter(
+      (s) =>
+        s.timeLabel.includes(q) ||
+        s.fileName.toLowerCase().includes(q) ||
+        s.rangeLabel.includes(q),
+    );
+  }, [slotFilter]);
+
+  // Count synced slots
+  const syncedCount = useMemo(() => {
+    return Object.values(slotStates).filter((s) => s?.status === "success").length;
+  }, [slotStates]);
+
   return (
     <main className="page-shell">
+      {/* Top Hero Banner */}
       <header className="hero">
         <div className="hero-topline">
           <div className="event-brand">
@@ -261,11 +267,32 @@ function App() {
           </div>
 
           <div className="header-actions">
-            <span className="live-indicator">
-              <span className="live-dot" />
-              Live leaderboard
-            </span>
+            {/* Primary Sync Button */}
+            <button
+              type="button"
+              className="sync-modal-launcher-btn"
+              onClick={() => setSyncModalOpen(true)}
+              title="Open Time Slot Synchronization modal"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span>Sync by Time Slot</span>
+              <span className="slot-count-badge">17 Slots</span>
+            </button>
 
+            {/* GitHub Settings Pill */}
             <button
               type="button"
               className={`github-settings-pill ${githubToken ? "configured" : "needed"}`}
@@ -292,73 +319,77 @@ function App() {
         </div>
 
         <div className="hero-copy">
-          <p className="eyebrow">THE CHALLENGE</p>
-          <h1>Quiz leaderboard</h1>
+          <p className="eyebrow">TIME-BASED QUIZ LEADERBOARD</p>
+          <h1>Scheduled Sync Dashboard</h1>
           <p className="hero-description">
-            Live scores synchronized from Firebase and committed to GitHub as{" "}
-            <code>public/data/leaderboard.json</code>.
+            Sync half-hour quiz intervals between 10:00 and 18:00 (24h format).
+            Queries top 10 prize-eligible players sorted by score and fastest time,
+            publishing directly to GitHub as <code>public/data/1030.json</code>,{" "}
+            <code>1100.json</code>, and more.
           </p>
         </div>
 
-        <div className="hero-stats" aria-label="Leaderboard summary">
+        <div className="hero-stats" aria-label="Slot sync summary">
           <div className="hero-stat">
-            <span className="stat-value">{participants.length}</span>
-            <span className="stat-label">LEADERS</span>
+            <span className="stat-value">{TIME_SLOTS.length}</span>
+            <span className="stat-label">TIME SLOTS (10:00–18:00)</span>
           </div>
           <div className="stat-divider" />
           <div className="hero-stat">
-            <span className="stat-value">15</span>
-            <span className="stat-label">TOP PLACES</span>
-          </div>
-          <div className="stat-divider" />
-          <div className="hero-stat updated-stat">
-            <span className="stat-value">{formatDate(lastUpdated)}</span>
-            <span className="stat-label">DATA CHECKED</span>
+            <span className="stat-value">{syncedCount} / {TIME_SLOTS.length}</span>
+            <span className="stat-label">SLOTS SYNCED</span>
           </div>
           <div className="stat-divider" />
           <div className="hero-stat updated-stat">
             <span className="stat-value">
-              {commitStatus?.time ? commitStatus.time : "Pending"}
+              {activeSlot ? activeSlot.timeLabel : "None Selected"}
             </span>
-            <span className="stat-label">GITHUB SYNC</span>
+            <span className="stat-label">ACTIVE VIEW</span>
+          </div>
+          <div className="stat-divider" />
+          <div className="hero-stat updated-stat">
+            <span className="stat-value">
+              {lastUpdated ? lastUpdated.toLocaleTimeString() : "No sync yet"}
+            </span>
+            <span className="stat-label">LAST ACTION</span>
           </div>
         </div>
       </header>
 
-      {/* GitHub Commit Status Toast / Banner */}
-      {commitStatus && (
+      {/* Banner Toast Notification */}
+      {bannerStatus && (
         <div
-          className={`commit-status-bar status-${commitStatus.type}`}
+          className={`commit-status-bar status-${bannerStatus.type}`}
           role="status"
         >
           <div className="status-content">
             <span className="status-indicator-dot" />
-            <span className="status-text">{commitStatus.message}</span>
-            {commitStatus.commitSha && (
+            <span className="status-text">{bannerStatus.message}</span>
+            {bannerStatus.commitSha && (
               <span className="commit-tag">
                 SHA:{" "}
-                {commitStatus.commitUrl ? (
+                {bannerStatus.commitUrl ? (
                   <a
-                    href={commitStatus.commitUrl}
+                    href={bannerStatus.commitUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="commit-link"
                   >
-                    {commitStatus.commitSha} ↗
+                    {bannerStatus.commitSha} ↗
                   </a>
                 ) : (
-                  commitStatus.commitSha
+                  bannerStatus.commitSha
                 )}
               </span>
             )}
-            {commitStatus.time && (
-              <span className="status-time">at {commitStatus.time}</span>
+            {bannerStatus.time && (
+              <span className="status-time">at {bannerStatus.time}</span>
             )}
           </div>
           <button
             type="button"
             className="status-dismiss"
-            onClick={() => setCommitStatus(null)}
+            onClick={() => setBannerStatus(null)}
             aria-label="Dismiss notification"
           >
             ×
@@ -366,92 +397,167 @@ function App() {
         </div>
       )}
 
-      <section
-        className="leaderboard-section"
-        aria-labelledby="leaderboard-title"
-      >
+      {/* Leaderboard Section */}
+      <section className="leaderboard-section">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">THE FRONT RUNNERS</p>
-            <h2 id="leaderboard-title">Top 15 players</h2>
+            <p className="eyebrow">
+              {activeSlot
+                ? `SLOT ${activeSlot.timeLabel} • WINDOW: ${activeSlot.rangeLabel}`
+                : "QUIZ RESULTS"}
+            </p>
+            <h2 id="leaderboard-title">
+              {activeSlot
+                ? `Top 10 Prize-Eligible Players (${activeSlot.fileName})`
+                : "No Time Slot Selected"}
+            </h2>
             <p className="ranking-note">
-              Ranked by score, then fastest total time
+              Filtered by <code>isPrizeEligible: true</code> and <code>completionTime</code> in window.
+              Ranked by highest score, then fastest total time.
             </p>
           </div>
 
           <div className="heading-controls">
-            {/* Auto-commit switch */}
-            <label
-              className="auto-commit-toggle"
-              title="Automatically commit leaderboard.json to GitHub when Firebase updates"
-            >
-              <input
-                type="checkbox"
-                checked={autoCommit}
-                onChange={handleToggleAutoCommit}
-              />
-              <span className="toggle-slider" />
-              <span className="toggle-label">Auto-commit</span>
-            </label>
-
-            {/* Manual Commit Button */}
             <button
-              className="commit-button"
+              className="sync-trigger-btn"
               type="button"
-              onClick={() => handleCommitToGitHub(participants, false)}
-              disabled={committing || loading || participants.length === 0}
-              title="Commit current leaderboard.json to GitHub repository"
+              onClick={() => setSyncModalOpen(true)}
             >
               <svg
-                viewBox="0 0 16 16"
+                viewBox="0 0 24 24"
                 width="14"
                 height="14"
-                fill="currentColor"
-                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
               >
-                <path d="M10.5 7.75a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zm1.43.75a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 1 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 1 1 0 1.5h-3.32z" />
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
               </svg>
-              {committing ? "Committing to GitHub…" : "Commit to GitHub"}
+              Select & Sync Time Slot
             </button>
 
-            {/* Refresh Button */}
-            <button
-              className="refresh-button"
-              type="button"
-              onClick={handleRefresh}
-              disabled={refreshing}
-            >
-              {refreshing ? "Refreshing…" : "Refresh"}
-            </button>
+            {/* Re-sync active slot button if selected */}
+            {activeSlot && (
+              <button
+                className="commit-button"
+                type="button"
+                onClick={() => handleSyncSlot(activeSlot)}
+                disabled={loadingSlot}
+                title={`Re-sync ${activeSlot.timeLabel} to GitHub`}
+              >
+                {loadingSlot ? "Syncing..." : `Re-sync ${activeSlot.timeLabel}`}
+              </button>
+            )}
 
-            {/* Download JSON */}
-            {jsonUrl && (
+            {/* Download JSON for active slot */}
+            {jsonUrl && activeSlot && (
               <a
                 className="json-download"
                 href={jsonUrl}
-                download="leaderboard.json"
+                download={activeSlot.fileName}
               >
-                Download JSON
+                Download {activeSlot.fileName}
               </a>
             )}
           </div>
         </div>
 
+        {/* Quick Slot Selector Bar (if slots have been synced or for quick switching) */}
+        <div className="slot-quick-bar" aria-label="Time slots list">
+          <span className="slot-quick-label">Jump to Slot:</span>
+          <div className="slot-quick-chips">
+            {TIME_SLOTS.map((slot) => {
+              const state = slotStates[slot.id];
+              const isSelected = activeSlot?.id === slot.id;
+              const isSynced = state?.status === "success";
+
+              return (
+                <button
+                  key={slot.id}
+                  type="button"
+                  className={`slot-chip ${isSelected ? "selected" : ""} ${isSynced ? "synced" : ""}`}
+                  onClick={() => {
+                    if (state?.data) {
+                      setActiveSlot(slot);
+                      setParticipants(state.data);
+                      setLastUpdated(new Date());
+                    } else {
+                      // Open sync modal focused on this slot or trigger sync
+                      handleSyncSlot(slot);
+                    }
+                  }}
+                  title={`Slot ${slot.timeLabel} (${slot.rangeLabel}) -> ${slot.fileName}`}
+                >
+                  <span className="chip-time">{slot.timeLabel}</span>
+                  {isSynced && <span className="chip-badge">✓</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {error && (
           <div className="notice error-notice" role="alert">
-            <strong>Could not load the leaderboard.</strong> {error}
+            <strong>Sync error:</strong> {error}
           </div>
         )}
 
+        {/* Leaderboard Table / Empty State */}
         <div className="leaderboard-card">
-          {loading ? (
+          {!activeSlot ? (
+            <div className="empty-state idle-state">
+              <div className="empty-icon-wrap" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="36"
+                  height="36"
+                  fill="none"
+                  stroke="#5368e8"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <h3>Ready to Synchronize</h3>
+              <p>
+                No time slot is loaded. Click the button below to choose any
+                half-hour interval between 10:00 and 18:00, query Firestore, and
+                publish the top 10 prize-eligible players to GitHub.
+              </p>
+              <button
+                type="button"
+                className="btn-primary-large"
+                onClick={() => setSyncModalOpen(true)}
+              >
+                Open Time Slot Sync Popup
+              </button>
+            </div>
+          ) : loadingSlot ? (
             <div className="empty-state" role="status">
-              Loading the latest scores…
+              <span className="loading-spinner" />
+              <span>
+                Querying database and synchronizing {activeSlot.timeLabel} ({activeSlot.rangeLabel})…
+              </span>
             </div>
           ) : participants.length === 0 ? (
             <div className="empty-state">
-              No quiz results yet. Check back after the first booth is
-              completed.
+              <div className="empty-icon-wrap" aria-hidden="true">
+                ℹ
+              </div>
+              <h3>No Eligible Records Found</h3>
+              <p>
+                No participants with <code>summary.isPrizeEligible: true</code> and{" "}
+                <code>completionTime</code> between <strong>{activeSlot.rangeLabel}</strong> were
+                found in the database.
+              </p>
+              <p className="subtle-note">
+                Target file <code>public/data/{activeSlot.fileName}</code> was updated
+                with an empty leaderboard.
+              </p>
             </div>
           ) : (
             <div className="table-scroll">
@@ -460,17 +566,18 @@ function App() {
                   <tr>
                     <th scope="col">RANK</th>
                     <th scope="col">PLAYER</th>
-                    <th scope="col">BOOTH TESTS</th>
+                    <th scope="col">COMPLETION TIME</th>
                     <th scope="col">SCORE</th>
                     <th scope="col">ACCURACY</th>
                     <th scope="col">TOTAL TIME</th>
+                    <th scope="col">BOOTH TESTS</th>
                     <th scope="col">PRIZE</th>
                   </tr>
                 </thead>
                 <tbody>
                   {participants.map((participant, index) => (
                     <tr
-                      key={`${participant.name}-${participant.registeredAt}-${index}`}
+                      key={`${participant.id}-${participant.registeredAt}-${index}`}
                     >
                       <td>
                         <span
@@ -491,12 +598,16 @@ function App() {
                               {participant.name || "Quiz player"}
                             </strong>
                             <span className="player-date">
-                              Joined {formatDate(participant.registeredAt)}
+                              {participant.email || participant.id}
                             </span>
                           </span>
                         </div>
                       </td>
-                      <td>{participant.totalTestsAppeared ?? 0}</td>
+                      <td>
+                        <span className="completion-tag">
+                          {participant.completionTime || "—"}
+                        </span>
+                      </td>
                       <td>
                         <strong className="score-value">
                           {participant.totalScore ?? 0}
@@ -512,14 +623,11 @@ function App() {
                         </span>
                       </td>
                       <td>
-                        {formatDuration(
-                          participant.tests?.reduce(
-                            (total, test) =>
-                              total + (Number(test.timeTakenSeconds) || 0),
-                            0,
-                          ),
-                        )}
+                        <strong className="time-value">
+                          {formatDuration(participant.totalTimeSeconds)}
+                        </strong>
                       </td>
+                      <td>{participant.totalTestsAppeared ?? 0}</td>
                       <td>
                         <span
                           className={`prize-badge ${
@@ -537,30 +645,270 @@ function App() {
           )}
         </div>
 
-        {!loading && participants.length > 0 && (
+        {activeSlot && participants.length > 0 && (
           <div className="results-footnote">
             <span>
-              Showing {participants.length} of the highest-scoring participants
+              Showing top {participants.length} records for slot{" "}
+              <strong>{activeSlot.timeLabel}</strong> ({activeSlot.rangeLabel})
             </span>
             <span>
-              Last activity: {formatDate(participants[0]?.lastUpdated)}
+              Published target: <code>{activeSlot.filePath}</code>
             </span>
           </div>
         )}
       </section>
 
-      {/* GitHub Token & Sync Settings Modal */}
+      {/* POPUP MODAL: Time Slot Synchronization (10:00 - 18:00) */}
+      {syncModalOpen && (
+        <div
+          className="modal-overlay"
+          onClick={() => setSyncModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="modal-card modal-card-wide"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <div>
+                <div className="modal-tag">SCHEDULED SYNC</div>
+                <h3>Synchronize by Time Slot (10:00 – 18:00)</h3>
+                <p className="modal-header-desc">
+                  Select a half-hour interval to pull top 10 prize-eligible records
+                  from Firestore and publish directly to GitHub as <code>1030.json</code>,{" "}
+                  <code>1100.json</code>, etc.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => setSyncModalOpen(false)}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="modal-controls-row">
+              <div className="search-box">
+                <input
+                  type="text"
+                  placeholder="Filter slots (e.g. 10:30, 1100, 14:00)..."
+                  value={slotFilter}
+                  onChange={(e) => setSlotFilter(e.target.value)}
+                />
+              </div>
+
+              <div className="quick-stats-pills">
+                <span className="info-pill">
+                  Total: <strong>{TIME_SLOTS.length} slots</strong>
+                </span>
+                <span className="info-pill success">
+                  Synced: <strong>{syncedCount}</strong>
+                </span>
+                <button
+                  type="button"
+                  className="btn-link"
+                  onClick={() => setShowCustomTester((prev) => !prev)}
+                >
+                  {showCustomTester ? "Hide Custom Tester" : "⚙ Custom/Test Slot"}
+                </button>
+              </div>
+            </div>
+
+            {/* Optional Custom/Test Slot Tool */}
+            {showCustomTester && (
+              <div className="custom-tester-panel">
+                <h4>Custom Slot Testing (e.g. Test Current Time)</h4>
+                <div className="tester-grid">
+                  <div className="tester-field">
+                    <label>Start Window (HH:mm)</label>
+                    <input
+                      type="text"
+                      value={customStart}
+                      onChange={(e) => setCustomStart(e.target.value)}
+                      placeholder="09:59"
+                    />
+                  </div>
+                  <div className="tester-field">
+                    <label>End Window (HH:mm)</label>
+                    <input
+                      type="text"
+                      value={customEnd}
+                      onChange={(e) => setCustomEnd(e.target.value)}
+                      placeholder="10:31"
+                    />
+                  </div>
+                  <div className="tester-field">
+                    <label>File Target (public/data/[name].json)</label>
+                    <input
+                      type="text"
+                      value={customFileId}
+                      onChange={(e) => setCustomFileId(e.target.value)}
+                      placeholder="1030"
+                    />
+                  </div>
+                  <div className="tester-action">
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={handleCustomSync}
+                      disabled={customSyncing}
+                    >
+                      {customSyncing ? "Syncing..." : "Sync Custom Window"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Grid of 17 Half-Hour Slot Panels */}
+            <div className="slots-grid">
+              {filteredSlots.map((slot) => {
+                const state = slotStates[slot.id];
+                const isSyncing = syncingSlotId === slot.id;
+                const isSynced = state?.status === "success";
+                const isError = state?.status === "error";
+
+                return (
+                  <div
+                    key={slot.id}
+                    className={`slot-card ${isSynced ? "is-synced" : ""} ${isSyncing ? "is-syncing" : ""}`}
+                  >
+                    <div className="slot-card-header">
+                      <div className="slot-time-badge">
+                        <span className="slot-time">{slot.timeLabel}</span>
+                        <span className="slot-badge-24h">24H</span>
+                      </div>
+                      <span
+                        className={`slot-status-pill ${
+                          isSyncing
+                            ? "status-syncing"
+                            : isSynced
+                            ? "status-synced"
+                            : isError
+                            ? "status-err"
+                            : "status-idle"
+                        }`}
+                      >
+                        {isSyncing
+                          ? "Syncing…"
+                          : isSynced
+                          ? "Synced"
+                          : isError
+                          ? "Failed"
+                          : "Ready"}
+                      </span>
+                    </div>
+
+                    <div className="slot-card-body">
+                      <div className="slot-meta-row">
+                        <span className="slot-meta-label">Query Window:</span>
+                        <strong className="slot-meta-val window-highlight">
+                          {slot.startTimeStr} to {slot.endTimeStr}
+                        </strong>
+                      </div>
+                      <div className="slot-meta-row">
+                        <span className="slot-meta-label">GitHub Target:</span>
+                        <code className="slot-filename">{slot.fileName}</code>
+                      </div>
+
+                      {isSynced && (
+                        <div className="slot-sync-details">
+                          <span className="sync-detail-item">
+                            👥 {state.count} top players found
+                          </span>
+                          {state.sha && (
+                            <span className="sync-detail-item sha-tag">
+                              SHA: {state.sha}
+                            </span>
+                          )}
+                          {state.time && (
+                            <span className="sync-detail-item time-tag">
+                              at {state.time}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {isError && (
+                        <div className="slot-error-msg">
+                          {state.error}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="slot-card-footer">
+                      <button
+                        type="button"
+                        className="slot-sync-btn"
+                        onClick={() => handleSyncSlot(slot)}
+                        disabled={isSyncing || loadingSlot}
+                      >
+                        {isSyncing ? (
+                          <>
+                            <span className="btn-spinner" />
+                            Syncing...
+                          </>
+                        ) : isSynced ? (
+                          `Re-sync ${slot.timeLabel}`
+                        ) : (
+                          `Sync ${slot.timeLabel}`
+                        )}
+                      </button>
+
+                      {isSynced && state.data && (
+                        <button
+                          type="button"
+                          className="slot-view-btn"
+                          onClick={() => {
+                            setActiveSlot(slot);
+                            setParticipants(state.data);
+                            setLastUpdated(new Date());
+                            setSyncModalOpen(false);
+                          }}
+                          title="View top records in dashboard table"
+                        >
+                          View Table
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="modal-footer">
+              <span className="modal-footer-note">
+                Target Repository: <strong>{DEFAULT_REPO_OWNER}/{DEFAULT_REPO_NAME}</strong> (Branch: {DEFAULT_BRANCH})
+              </span>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setSyncModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GitHub Token & Settings Modal */}
       {settingsOpen && (
-        <div className="modal-overlay" onClick={() => setSettingsOpen(false)}>
+        <div
+          className="modal-overlay"
+          onClick={() => setSettingsOpen(false)}
+          role="dialog"
+          aria-modal="true"
+        >
           <div
             className="modal-card"
             onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="settings-title"
           >
             <div className="modal-header">
-              <h3 id="settings-title">GitHub Commit Settings</h3>
+              <h3>GitHub Commit Settings</h3>
               <button
                 type="button"
                 className="modal-close"
@@ -574,7 +922,7 @@ function App() {
             <div className="modal-body">
               <p className="modal-desc">
                 Configure your GitHub Personal Access Token to commit{" "}
-                <code>public/data/leaderboard.json</code> directly to{" "}
+                <code>public/data/1030.json</code>, <code>1100.json</code>, etc., directly to{" "}
                 <strong>{DEFAULT_REPO_OWNER}/{DEFAULT_REPO_NAME}</strong>.
               </p>
 
@@ -601,21 +949,6 @@ function App() {
                 </div>
               )}
 
-              <div className="field-group">
-                <label className="checkbox-row">
-                  <input
-                    type="checkbox"
-                    checked={autoCommit}
-                    onChange={handleToggleAutoCommit}
-                  />
-                  <span>
-                    <strong>Auto-commit on new Firebase results:</strong>{" "}
-                    Automatically commit to GitHub whenever Firestore updates
-                    the leaderboard.
-                  </span>
-                </label>
-              </div>
-
               <div className="repo-meta-box">
                 <div className="meta-item">
                   <span className="meta-label">Repository:</span>
@@ -625,11 +958,11 @@ function App() {
                 </div>
                 <div className="meta-item">
                   <span className="meta-label">Branch:</span>
-                  <span className="meta-val">main</span>
+                  <span className="meta-val">{DEFAULT_BRANCH}</span>
                 </div>
                 <div className="meta-item">
-                  <span className="meta-label">File target:</span>
-                  <span className="meta-val">public/data/leaderboard.json</span>
+                  <span className="meta-label">Directory:</span>
+                  <span className="meta-val">public/data/[time].json</span>
                 </div>
               </div>
             </div>
@@ -658,9 +991,10 @@ function App() {
         </div>
       )}
 
+      {/* Page Footer */}
       <footer className="page-footer">
-        <span>Innovation Showcase 2026</span>
-        <span>Live Firestore & GitHub Sync</span>
+        <span>Innovation Showcase 2026 • Time-Based Quiz Leaderboard</span>
+        <span>Half-Hour Synchronizer (10:00 to 18:00)</span>
       </footer>
     </main>
   );
