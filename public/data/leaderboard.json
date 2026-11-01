@@ -1,5 +1,39 @@
 [
   {
+    "name": "sabbu",
+    "registeredAt": "2026-11-01T14:32:53.608Z",
+    "totalTestsAppeared": 2,
+    "totalScore": 7,
+    "totalQuestions": 10,
+    "overallAccuracy": 70,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T14:57:08.701Z",
+    "tests": [
+      {
+        "boothId": "booth-1",
+        "boothNumber": 1,
+        "boothTitle": "Data / Security",
+        "topicTitle": "Data / Security",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 23,
+        "completedAt": "2026-11-01T14:47:06.835Z"
+      },
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "Engineering Efficiency & Enhancing Productivity",
+        "topicTitle": "Engineering Efficiency & Enhancing Productivity",
+        "score": 4,
+        "totalQuestions": 5,
+        "percentage": 80,
+        "timeTakenSeconds": 13,
+        "completedAt": "2026-11-01T14:57:08.701Z"
+      }
+    ]
+  },
+  {
     "name": "Chandra Javalkar",
     "registeredAt": "2026-10-31T08:24:18.813Z",
     "totalTestsAppeared": 4,
@@ -419,16 +453,5 @@
         "completedAt": "2026-11-01T08:08:21.765Z"
       }
     ]
-  },
-  {
-    "name": "Mike",
-    "registeredAt": "2026-11-01T08:06:04.857Z",
-    "totalTestsAppeared": 0,
-    "totalScore": 0,
-    "totalQuestions": 0,
-    "overallAccuracy": 0,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-11-01T08:06:04.857Z",
-    "tests": []
   }
 ]
