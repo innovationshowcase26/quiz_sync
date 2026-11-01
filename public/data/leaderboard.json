@@ -158,6 +158,40 @@
     ]
   },
   {
+    "name": "Chandra J",
+    "registeredAt": "2026-11-01T15:22:15.730Z",
+    "totalTestsAppeared": 2,
+    "totalScore": 3,
+    "totalQuestions": 10,
+    "overallAccuracy": 30,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T15:46:46.193Z",
+    "tests": [
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "Engineering Efficiency & Enhancing Productivity",
+        "topicTitle": "Engineering Efficiency & Enhancing Productivity",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 9,
+        "completedAt": "2026-11-01T15:22:50.204Z"
+      },
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Modernization And Transformation",
+        "topicTitle": "Modernization And Transformation",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 14,
+        "completedAt": "2026-11-01T15:46:46.193Z"
+      }
+    ]
+  },
+  {
     "name": "sabbu",
     "registeredAt": "2026-10-31T08:10:43.023Z",
     "totalTestsAppeared": 1,
@@ -314,29 +348,6 @@
         "percentage": 40,
         "timeTakenSeconds": 90,
         "completedAt": "2026-11-01T13:06:04.213Z"
-      }
-    ]
-  },
-  {
-    "name": "Chandra J",
-    "registeredAt": "2026-11-01T15:22:15.730Z",
-    "totalTestsAppeared": 1,
-    "totalScore": 1,
-    "totalQuestions": 5,
-    "overallAccuracy": 20,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-11-01T15:22:50.204Z",
-    "tests": [
-      {
-        "boothId": "booth-3",
-        "boothNumber": 3,
-        "boothTitle": "Engineering Efficiency & Enhancing Productivity",
-        "topicTitle": "Engineering Efficiency & Enhancing Productivity",
-        "score": 1,
-        "totalQuestions": 5,
-        "percentage": 20,
-        "timeTakenSeconds": 9,
-        "completedAt": "2026-11-01T15:22:50.204Z"
       }
     ]
   },
