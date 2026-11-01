@@ -318,6 +318,29 @@
     ]
   },
   {
+    "name": "Chandra J",
+    "registeredAt": "2026-11-01T15:22:15.730Z",
+    "totalTestsAppeared": 1,
+    "totalScore": 1,
+    "totalQuestions": 5,
+    "overallAccuracy": 20,
+    "isPrizeEligible": false,
+    "lastUpdated": "2026-11-01T15:22:50.204Z",
+    "tests": [
+      {
+        "boothId": "booth-3",
+        "boothNumber": 3,
+        "boothTitle": "Engineering Efficiency & Enhancing Productivity",
+        "topicTitle": "Engineering Efficiency & Enhancing Productivity",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 9,
+        "completedAt": "2026-11-01T15:22:50.204Z"
+      }
+    ]
+  },
+  {
     "name": "Shamaaz",
     "registeredAt": "2026-11-01T12:33:26.095Z",
     "totalTestsAppeared": 1,
@@ -428,29 +451,6 @@
         "percentage": 20,
         "timeTakenSeconds": 15,
         "completedAt": "2026-11-01T10:12:37.840Z"
-      }
-    ]
-  },
-  {
-    "name": "Sushma Gurung",
-    "registeredAt": "2026-11-01T08:06:39.641Z",
-    "totalTestsAppeared": 1,
-    "totalScore": 1,
-    "totalQuestions": 5,
-    "overallAccuracy": 20,
-    "isPrizeEligible": false,
-    "lastUpdated": "2026-11-01T08:08:21.765Z",
-    "tests": [
-      {
-        "boothId": "booth-1",
-        "boothNumber": 1,
-        "boothTitle": "Data Governance, Lineage & Zero Trust",
-        "topicTitle": "Data Governance, Lineage & Zero Trust",
-        "score": 1,
-        "totalQuestions": 5,
-        "percentage": 20,
-        "timeTakenSeconds": 84,
-        "completedAt": "2026-11-01T08:08:21.765Z"
       }
     ]
   }
