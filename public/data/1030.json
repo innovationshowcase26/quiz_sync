@@ -1,0 +1,212 @@
+[
+  {
+    "id": "9886420806",
+    "name": "Prashant Kalatippi",
+    "email": "9886420806",
+    "registeredAt": "2026-11-02T04:48:14.942Z",
+    "totalTestsAppeared": 4,
+    "totalScore": 16,
+    "totalQuestions": 20,
+    "totalTimeSeconds": 199,
+    "completionTime": "10:27",
+    "overallAccuracy": 80,
+    "isPrizeEligible": true,
+    "summary": {
+      "totalTimeSeconds": 199,
+      "isPrizeEligible": true,
+      "accuracy": 80,
+      "totalQuestions": 20,
+      "isTargetReached": true,
+      "boothsCompleted": 4,
+      "totalScore": 16,
+      "completionTime": "10:27"
+    },
+    "lastUpdated": "2026-11-02T04:57:35.815Z",
+    "tests": [
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Modernization And Transformation",
+        "topicTitle": "Modernization And Transformation",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 90,
+        "completedAt": "2026-11-02T04:53:54.739Z"
+      },
+      {
+        "boothId": "booth-6",
+        "boothNumber": 6,
+        "boothTitle": "Business Enablers - Booth 1",
+        "topicTitle": "Business Enablers - Booth 1",
+        "score": 4,
+        "totalQuestions": 5,
+        "percentage": 80,
+        "timeTakenSeconds": 56,
+        "completedAt": "2026-11-02T04:49:54.692Z"
+      },
+      {
+        "boothId": "booth-8",
+        "boothNumber": 8,
+        "boothTitle": "Technology Enablers - Booth 1",
+        "topicTitle": "Technology Enablers - Booth 1",
+        "score": 5,
+        "totalQuestions": 5,
+        "percentage": 100,
+        "timeTakenSeconds": 27,
+        "completedAt": "2026-11-02T04:57:35.815Z"
+      },
+      {
+        "boothId": "booth-9",
+        "boothNumber": 9,
+        "boothTitle": "Technology Enablers - Booth 2",
+        "topicTitle": "Technology Enablers - Booth 2",
+        "score": 5,
+        "totalQuestions": 5,
+        "percentage": 100,
+        "timeTakenSeconds": 26,
+        "completedAt": "2026-11-02T04:56:16.789Z"
+      }
+    ]
+  },
+  {
+    "id": "9890236695",
+    "name": "Saurabh Seth",
+    "email": "9890236695",
+    "registeredAt": "2026-11-02T04:48:21.086Z",
+    "totalTestsAppeared": 4,
+    "totalScore": 15,
+    "totalQuestions": 20,
+    "totalTimeSeconds": 293,
+    "completionTime": "10:29",
+    "overallAccuracy": 75,
+    "isPrizeEligible": true,
+    "summary": {
+      "totalTimeSeconds": 293,
+      "isPrizeEligible": true,
+      "accuracy": 75,
+      "totalQuestions": 20,
+      "completionTime": "10:29",
+      "boothsCompleted": 4,
+      "isTargetReached": true,
+      "totalScore": 15
+    },
+    "lastUpdated": "2026-11-02T04:59:07.646Z",
+    "tests": [
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Modernization And Transformation",
+        "topicTitle": "Modernization And Transformation",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 77,
+        "completedAt": "2026-11-02T04:54:29.454Z"
+      },
+      {
+        "boothId": "booth-6",
+        "boothNumber": 6,
+        "boothTitle": "Business Enablers - Booth 1",
+        "topicTitle": "Business Enablers - Booth 1",
+        "score": 4,
+        "totalQuestions": 5,
+        "percentage": 80,
+        "timeTakenSeconds": 90,
+        "completedAt": "2026-11-02T04:50:52.404Z"
+      },
+      {
+        "boothId": "booth-8",
+        "boothNumber": 8,
+        "boothTitle": "Technology Enablers - Booth 1",
+        "topicTitle": "Technology Enablers - Booth 1",
+        "score": 4,
+        "totalQuestions": 5,
+        "percentage": 80,
+        "timeTakenSeconds": 64,
+        "completedAt": "2026-11-02T04:59:07.646Z"
+      },
+      {
+        "boothId": "booth-9",
+        "boothNumber": 9,
+        "boothTitle": "Technology Enablers - Booth 2",
+        "topicTitle": "Technology Enablers - Booth 2",
+        "score": 4,
+        "totalQuestions": 5,
+        "percentage": 80,
+        "timeTakenSeconds": 62,
+        "completedAt": "2026-11-02T04:57:14.340Z"
+      }
+    ]
+  },
+  {
+    "id": "9035328312",
+    "name": "Usha",
+    "email": "9035328312",
+    "registeredAt": "2026-11-02T04:47:50.210Z",
+    "totalTestsAppeared": 4,
+    "totalScore": 8,
+    "totalQuestions": 20,
+    "totalTimeSeconds": 65,
+    "completionTime": "10:24",
+    "overallAccuracy": 40,
+    "isPrizeEligible": true,
+    "summary": {
+      "isPrizeEligible": true,
+      "accuracy": 40,
+      "completionTime": "10:24",
+      "totalScore": 8,
+      "isTargetReached": true,
+      "boothsCompleted": 4,
+      "totalTimeSeconds": 65,
+      "totalQuestions": 20
+    },
+    "lastUpdated": "2026-11-02T04:54:01.499Z",
+    "tests": [
+      {
+        "boothId": "booth-4",
+        "boothNumber": 4,
+        "boothTitle": "Modernization And Transformation",
+        "topicTitle": "Modernization And Transformation",
+        "score": 3,
+        "totalQuestions": 5,
+        "percentage": 60,
+        "timeTakenSeconds": 15,
+        "completedAt": "2026-11-02T04:54:01.499Z"
+      },
+      {
+        "boothId": "booth-6",
+        "boothNumber": 6,
+        "boothTitle": "Business Enablers - Booth 1",
+        "topicTitle": "Business Enablers - Booth 1",
+        "score": 1,
+        "totalQuestions": 5,
+        "percentage": 20,
+        "timeTakenSeconds": 8,
+        "completedAt": "2026-11-02T04:52:45.565Z"
+      },
+      {
+        "boothId": "booth-8",
+        "boothNumber": 8,
+        "boothTitle": "Technology Enablers - Booth 1",
+        "topicTitle": "Technology Enablers - Booth 1",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 28,
+        "completedAt": "2026-11-02T04:48:32.412Z"
+      },
+      {
+        "boothId": "booth-9",
+        "boothNumber": 9,
+        "boothTitle": "Technology Enablers - Booth 2",
+        "topicTitle": "Technology Enablers - Booth 2",
+        "score": 2,
+        "totalQuestions": 5,
+        "percentage": 40,
+        "timeTakenSeconds": 14,
+        "completedAt": "2026-11-02T04:50:03.717Z"
+      }
+    ]
+  }
+]
