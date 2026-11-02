@@ -12,14 +12,14 @@
     "overallAccuracy": 80,
     "isPrizeEligible": true,
     "summary": {
-      "totalTimeSeconds": 199,
-      "isPrizeEligible": true,
-      "accuracy": 80,
       "totalQuestions": 20,
-      "isTargetReached": true,
+      "completionTime": "10:27",
+      "totalTimeSeconds": 199,
+      "accuracy": 80,
+      "isPrizeEligible": true,
       "boothsCompleted": 4,
       "totalScore": 16,
-      "completionTime": "10:27"
+      "isTargetReached": true
     },
     "lastUpdated": "2026-11-02T04:57:35.815Z",
     "tests": [
@@ -83,13 +83,13 @@
     "isPrizeEligible": true,
     "summary": {
       "totalTimeSeconds": 293,
-      "isPrizeEligible": true,
-      "accuracy": 75,
-      "totalQuestions": 20,
-      "completionTime": "10:29",
-      "boothsCompleted": 4,
       "isTargetReached": true,
-      "totalScore": 15
+      "totalQuestions": 20,
+      "totalScore": 15,
+      "isPrizeEligible": true,
+      "boothsCompleted": 4,
+      "completionTime": "10:29",
+      "accuracy": 75
     },
     "lastUpdated": "2026-11-02T04:59:07.646Z",
     "tests": [
@@ -152,14 +152,14 @@
     "overallAccuracy": 40,
     "isPrizeEligible": true,
     "summary": {
-      "isPrizeEligible": true,
-      "accuracy": 40,
-      "completionTime": "10:24",
-      "totalScore": 8,
-      "isTargetReached": true,
-      "boothsCompleted": 4,
       "totalTimeSeconds": 65,
-      "totalQuestions": 20
+      "totalScore": 8,
+      "totalQuestions": 20,
+      "completionTime": "10:24",
+      "accuracy": 40,
+      "isTargetReached": true,
+      "isPrizeEligible": true,
+      "boothsCompleted": 4
     },
     "lastUpdated": "2026-11-02T04:54:01.499Z",
     "tests": [
